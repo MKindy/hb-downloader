@@ -13,12 +13,12 @@ class FakeLibrary:
     gamekeys_list = []
     local_path = ""
 
-    def __init__(self, hapi, unlock_trove=True):
+    def __init__(self, hapi):
         self.local_path = path.dirname(__file__)
         self.update_gamekeys(hapi)
         self.prepare_fake_answer_list_gamekeys(hapi)
         self.prepare_fake_answers_keys(hapi)
-        self.prepare_fake_answer_trove(hapi, unlock_trove)
+        self.prepare_fake_answer_trove(hapi)
 
     def update_gamekeys(self, hapi):
         self.gamekeys_list = []
@@ -26,11 +26,11 @@ class FakeLibrary:
             self.gamekeys_list.append(path.basename(filename)[0:-4])
         self.gamekeys_list.append(hapi.TROVE_GAMEKEY)
 
-    def prepare_fake_answer_trove(self, hapi, unlock_trove):
+    def prepare_fake_answer_trove(self, hapi):
         httpretty.register_uri(
             httpretty.GET,
             hapi.TROVE_PAGE_URL,
-            self.get_trove_answer(unlock_trove)
+            self.readfile("trove.html")
         )
         httpretty.register_uri(
             httpretty.POST,
@@ -48,12 +48,6 @@ class FakeLibrary:
 
     def get_answer_for(self, key):
         return self.readfile(key + ".key")
-
-    def get_trove_answer(self, unlock_trove):
-        if unlock_trove:
-            return self.readfile("trove_OK.html")
-        else:
-            return self.readfile("trove_KO.html")
 
     def prepare_fake_answer_list_gamekeys(self, hapi):
         string = "[\n"

@@ -31,7 +31,7 @@ class HumbleApi(object):
     ORDER_LIST_URL = "https://www.humblebundle.com/api/v1/user/order"
     ORDER_URL = "https://www.humblebundle.com/api/v1/order/{order_id}"
     TROVE_SIGN_URL= "https://www.humblebundle.com/api/v1/user/download/sign"
-    TROVE_PAGE_URL = "https://www.humblebundle.com/monthly/trove"
+    TROVE_PAGE_URL = "https://www.humblebundle.com/api/v1/trove/chunk?index={chunk_index}"
 
     TROVE_GAMEKEY = TroveOrder.TROVE_GAMEKEY  # Arbitrary gamekey used to identify humble trove orders
 
@@ -165,9 +165,27 @@ class HumbleApi(object):
             return Order(data)
 
     def get_trove_items(self):
+        """
+            get element from trove making request on hb api
+        """
+        trove_data_element = []
+        chunk_index = 0
 
-        trove_page = self._request("GET", HumbleApi.TROVE_PAGE_URL)
-        return TroveOrder(trove_page.text, self)  # TODO error handling
+        while True:
+            url = HumbleApi.TROVE_PAGE_URL.format(chunk_index=chunk_index)
+            response = self._request("GET", url)
+            """ get_gamekeys response always returns JSON """
+            data = self.__parse_data(response)
+            """ [] as response mean that we have tried all the chunk_index """
+            if(data == []):
+                break
+            else:
+                """ Make a flat list for trove_data_element """
+                for i in data:
+                    trove_data_element.append(i)
+                chunk_index = chunk_index + 1
+        
+        return TroveOrder(trove_data_element, self)  # TODO error handling
 
     def _request(self, *args, **kwargs):
         """

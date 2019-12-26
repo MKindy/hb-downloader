@@ -5,13 +5,14 @@ from .order import Order
 from .subproduct import Subproduct
 from .product import Product
 from sys import stderr
+import json
 
 
 class TroveOrder(Order):
 
     TROVE_GAMEKEY = "Humble-trove-games"
 
-    def __init__(self, trove_page_html_text, hapi):
+    def __init__(self, trove_data_element, hapi):
         """
             Parameterized constructor for the Order object.
 
@@ -19,38 +20,31 @@ class TroveOrder(Order):
             :param hapi: humble bundle api handle. Used to read the trove dummy gamekey and signing URL.
         """
 
-        super(Order, self).__init__(trove_page_html_text)
-
-        try:  # TODO: maybe move this check elsewhere to disable trove
-            import lxml.html
-        except ModuleNotFoundError:
-            print("Warning: lxml is necessary for humble trove support", file=stderr)
-            return
-
-        tree = lxml.html.fromstring(trove_page_html_text)
-        trove_products = tree.find_class("trove-product-detail")
+        super(Order, self).__init__(trove_data_element)
 
         subproducts = []
-        for product_lxml in trove_products:
-            if len(product_lxml.find_class('js-download-button')) == 0:  # Download button means valid product
-                continue
-            platforms = product_lxml.find_class("trove-platform-selector")
-            product = {'human_name': product_lxml.find_class('product-human-name')[0].text,
-                       'machine_name': product_lxml.attrib['data-machine-name'],
+        
+        for trove_data in trove_data_element:
+            product = {'human_name': trove_data['human-name'],
+                       'machine_name': trove_data['machine_name'],
                        'downloads': [],
                        'payee': {}  # TODO: put something better here
                        }
-            for p in platforms:
+            for platform, platform_data in trove_data['downloads'].items():
                 pp = dict()
-                pp['platform'] = p.attrib['data-platform']
-                pp['download_identifier'] = p.attrib['data-url']
-                pp['machine_name'] = p.attrib['data-machine-name']
+                pp['platform'] = platform
+                pp['download_identifier'] = platform_data['url']['web']
+                pp['machine_name'] = platform_data['machine_name']
                 signed = hapi.get_signed_trove_url(pp['machine_name'], pp['download_identifier'])
                 pp['download_struct'] = [{
                     'url': {
                         'web': signed.get('signed_url', None),
                         'bittorrent': signed.get('signed_torrent_url', None)
-                    }
+                    },
+                    'file_size': platform_data.get('file_size'),
+                    'human_size': platform_data.get('size'),
+                    'md5': platform_data.get('md5'),
+                    'sha1': platform_data.get('sha1')
                 }]
                 pp['options_dict'] = None  # TODO: What is this?
                 product['downloads'].append(pp)

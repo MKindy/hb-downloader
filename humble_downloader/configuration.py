@@ -47,7 +47,6 @@ class Configuration(object):
         """
         with open(config_file, "r") as f:
             saved_config = yaml.safe_load(f)
-
         ConfigData.download_platforms = saved_config.get(
                 "download-platforms", ConfigData.download_platforms)
         ConfigData.write_md5 = saved_config.get(
@@ -153,17 +152,11 @@ class Configuration(object):
             args.print_url = False
 
         if args.action is not None:
-            if args.platform is None:
-                args.platform = Configuration.cmdline_platform.get(
-                        args.item_type)
             for platform in ConfigData.download_platforms:
                 if args.platform is None:
-                    ConfigData.download_platforms[platform] = True
                     continue
                 if platform in args.platform:
                     ConfigData.download_platforms[platform] = True
-                else:
-                    ConfigData.download_platforms[platform] = False
             # "fake platforms" can be defined to list info like humble keys
             # TODO: only allow them for listing?
             if args.item_type not in ConfigData.download_platforms:
