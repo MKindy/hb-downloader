@@ -56,7 +56,7 @@ After getting the installation files, you then need to fetch your
 authentication cookie from humblebundle.com.  To do so, navigate there, log in
 and press F12 to open the developper tools of your browser. Navigate to the
 cookies tab, and look for a cookie named `_simple_auth` (on the
-humblebundle.com domain). Copy the value inside the
+humblebundle.com domain). Make a copy of the `hb-downloader-settings.yaml.example` to `hb-downloader-settings.yaml`. Copy the value inside the
 `hb-downloader-settings.yaml` file, or specify it on the command line with the
 "-c" flag. Pay attention that every character is correctly escaped according to
 the method you choose.
