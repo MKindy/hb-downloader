@@ -3,20 +3,27 @@
 import argparse
 import os
 import yaml
+from urllib.parse import urlparse
+from urllib.parse import parse_qs
 from hb_downloader import logger
 from hb_downloader.config_data import ConfigData
 from hb_downloader.humble_api.humble_hash import HumbleHash
 
 __author__ = "Brian Schkerke"
-__copyright__ = "Copyright 2016 Brian Schkerke"
+__copyright__ = "Copyright 2020 Brian Schkerke"
 __license__ = "MIT"
 
 
 class Configuration(object):
-    cmdline_platform = {  # Mapping between hb convention and ours
-            'games': ['android', 'asmjs', 'linux', 'mac', 'windows'],
-            'ebooks': ['ebook'],
-            'audio': ['audio']}
+    cmdline_platform = {}  # Mapping between hb convention and ours
+
+    @staticmethod
+    def init_platforms():
+        c = Configuration.cmdline_platform
+        c['games'] = ['android', 'asmjs', 'linux', 'mac', 'windows']
+        c['ebooks'] = ['ebook']
+        c['audio'] = ['audio']
+        c['all'] = c['games'] + c['ebooks'] + c['audio']
 
     @staticmethod
     def validate_configuration():
@@ -27,11 +34,11 @@ class Configuration(object):
             :return:  None
         """
         if not os.path.exists(ConfigData.download_location):
-            return False, "Download location doesn't exist"
+            return False, "Download location (%s) doesn't exist" % ConfigData.download_location
 
         if not os.access(ConfigData.download_location, os.W_OK | os.X_OK):
             return False, (
-                    "Download location is not writable by the current user.")
+                    "Download location (%s) is not writable by the current user." % ConfigData.download_location)
 
         return True, ""
 
@@ -48,6 +55,10 @@ class Configuration(object):
 
         ConfigData.download_platforms = saved_config.get(
                 "download-platforms", ConfigData.download_platforms)
+        ConfigData.audio_types = saved_config.get(
+                "audio_types", ConfigData.audio_types)
+        ConfigData.ebook_types = saved_config.get(
+                "ebook_types", ConfigData.ebook_types)
         ConfigData.write_md5 = saved_config.get(
                 "write_md5", ConfigData.write_md5)
         ConfigData.read_md5 = saved_config.get(
@@ -60,6 +71,8 @@ class Configuration(object):
                 "debug", ConfigData.debug)
         ConfigData.download_location = saved_config.get(
                 "download-location", ConfigData.download_location)
+        ConfigData.folderstructure_OrderName = saved_config.get(
+                "folderstructure_OrderName", ConfigData.folderstructure_OrderName)
         ConfigData.auth_sess_cookie = saved_config.get(
                 "session-cookie", ConfigData.auth_sess_cookie)
         ConfigData.resume_downloads = saved_config.get(
@@ -85,6 +98,10 @@ class Configuration(object):
         parser.add_argument("-dl", "--download_location",
                             default=ConfigData.download_location, type=str,
                             help="Location to store downloaded files.")
+        parser.add_argument("-fldr", "--folderstructure_OrderName",
+                            default=ConfigData.folderstructure_OrderName, action="store_false",
+                            help=("Folder Structure :"
+                                  "                   group by OrderName default=True"))
         parser.add_argument(
                 "-cs", "--chunksize", default=ConfigData.chunk_size, type=int,
                 help=("The size to use when calculating MD5s and downloading"
@@ -113,6 +130,15 @@ class Configuration(object):
                         "override the configuration file. If no further "
                         "parameters are specified, this will default to "
                         "downloading everything in the library."))
+        a_product = sub.add_parser(
+                "download-product", help=(
+                        "You can narrow downloading down to the product level. "
+                        "This would be one single bundle. "))
+
+        a_product.add_argument(
+            dest="download_product",
+            help="Product Key (looks like a bunch of garbled letters)"
+            )
 
         for action in [a_list, a_download]:
             item_type = action.add_subparsers(title="type", dest="item_type")
@@ -122,6 +148,7 @@ class Configuration(object):
                             "linux", "mac", "windows", "android", "asmjs"])
             item_type.add_parser("ebooks")
             item_type.add_parser("audio")
+            item_type.add_parser("all")
 
         a_list.add_argument(
                 "-u", "--print-url", action="store_true", dest="print_url",
@@ -145,7 +172,15 @@ class Configuration(object):
             args.print_url = False
 
         if args.action is not None:
-            if args.platform is None:
+            if args.action == "download-product":
+                args.platform = None
+                ConfigData.download_product = args.download_product
+                url = urlparse(args.download_product)
+                qs = parse_qs(url.query)
+                if qs and qs['key']:
+                    ConfigData.download_product = qs['key'][0]
+
+            elif args.platform is None:
                 args.platform = Configuration.cmdline_platform.get(
                         args.item_type)
             for platform in ConfigData.download_platforms:
@@ -186,6 +221,9 @@ class Configuration(object):
                 True, "Config", "download_location=%s" %
                 ConfigData.download_location)
         logger.display_message(
+                True, "Config", "folderstructure_OrderName=%s" %
+                ConfigData.folderstructure_OrderName)
+        logger.display_message(
                 True, "Config", "chunksize=%s" % ConfigData.chunk_size)
         logger.display_message(
                 True, "Config", "resume_downloads=%s" %
@@ -199,6 +237,16 @@ class Configuration(object):
                     True, "Config", "Platform %s=%s" %
                     (platform, ConfigData.download_platforms[platform]))
 
+        for atype in list(ConfigData.audio_types.keys()):
+            logger.display_message(
+                    True, "Config", "Audio Types %s=%s" %
+                    (atype, ConfigData.audio_types[atype]))
+
+        for etypes in list(ConfigData.ebook_types.keys()):
+            logger.display_message(
+                    True, "Config", "ebook Types %s=%s" %
+                    (etypes, ConfigData.ebook_types[etypes]))
+
     @staticmethod
     def push_configuration():
         """
@@ -211,3 +259,5 @@ class Configuration(object):
         HumbleHash.read_md5 = ConfigData.read_md5
         HumbleHash.force_md5 = ConfigData.force_md5
         HumbleHash.chunk_size = ConfigData.chunk_size
+
+Configuration.init_platforms()

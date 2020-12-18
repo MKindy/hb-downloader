@@ -5,11 +5,29 @@ import requests
 from hb_downloader.config_data import ConfigData
 from hb_downloader.humble_api.events import Events
 from hb_downloader.humble_api.humble_hash import HumbleHash
+from hb_downloader import logger
 
 __author__ = "Brian Schkerke"
-__copyright__ = "Copyright 2016 Brian Schkerke"
+__copyright__ = "Copyright 2020 Brian Schkerke"
 __license__ = "MIT"
 
+def format_filesize(filesize):
+    prefixes = [' bytes', ' KiB', ' MiB', ' GiB', ' TiB']
+    index_level = 0
+
+    if not filesize:
+        return None
+
+    while abs(filesize / 1024) > 1 and index_level < len(prefixes) - 1:
+        index_level += 1
+        filesize /= 1024
+
+    try:
+        size = "%.2f%s" % (filesize, prefixes[index_level])
+    except:
+        size = "unknown"
+        pass
+    return size
 
 class HumbleDownload(object):
     order_number = ""
@@ -32,7 +50,7 @@ class HumbleDownload(object):
         self.download_url = cds.download_web
         self.filename = cds.filename
         self.humble_file_size = cds.file_size
-        self.humble_file_size_human = cds.human_size
+        self.humble_file_size_human = format_filesize(cds.file_size) or cds.human_size
         self.platform = cd.platform
         self.product_name = co.product.human_name
         self.product_name_machine = co.product.machine_name
@@ -87,8 +105,21 @@ class HumbleDownload(object):
 
             :return:  The full path and filename for the current download.
         """
-        return os.path.join(ConfigData.download_location, self.subproduct_name,
-                            self.platform, self.filename)
+
+        # TODO HK: add options for path structure from commandline and or cfg file
+
+        if not ConfigData.folderstructure_OrderName:
+            temp_full_filename = os.path.join(
+                ConfigData.download_location,
+				self.subproduct_name, self.platform,
+				self.filename)
+        else:
+            temp_full_filename = os.path.join(
+                ConfigData.download_location,
+                self.product_name_machine, self.subproduct_name, self.platform,
+                self.filename)
+
+        return temp_full_filename
 
     def remove(self):
         """
@@ -190,8 +221,20 @@ class HumbleDownload(object):
         """ Creates the directory for storing the current file if it doesn't
             exist.
         """
-        full_directory = os.path.join(ConfigData.download_location,
-                                      self.subproduct_name, self.platform)
+
+        # TODO HK: add options for path structure from commandline and or cfg file
+
+        # full_directory = os.path.join(ConfigData.download_location,
+        #                               self.order_number, self.subproduct_name, self.platform)
+
+        if not ConfigData.folderstructure_OrderName:
+            full_directory = os.path.join(ConfigData.download_location,
+            				              self.subproduct_name, self.platform)
+        else:
+            full_directory = os.path.join(ConfigData.download_location,
+                                          self.product_name_machine, self.subproduct_name, self.platform)
+
+
         if not os.path.exists(full_directory):
             os.makedirs(full_directory)
 
@@ -256,16 +299,46 @@ class HumbleDownload(object):
                                    if nhd.humble_md5 == hd.humble_md5][0]
 
     @staticmethod
+    def download_is_excluded(platform, filename):
+        """Returns a boolean value representing if the file is excluded by configuration"""
+        if platform is "audio":
+            if "flac" in filename:
+                return not ConfigData.audio_types.get("flac", True)
+            elif "ogg" in filename:
+                return not ConfigData.audio_types.get("ogg", True)
+            elif "mp3" in filename:
+                return not ConfigData.audio_types.get("mp3", True)
+            else:
+                return not ConfigData.audio_types.get("other", True)
+        elif platform is "ebook":
+            if "pdf" in filename:
+                return not ConfigData.ebook_types.get("pdf", True)
+            elif "mobi" in filename:
+                return not ConfigData.ebook_types.get("mobi", True)
+            elif "epub" in filename:
+                return not ConfigData.ebook_types.get("epub", True)
+            else:
+                return not ConfigData.ebook_types.get("other", True)
+        else:
+            return False
+
+    @staticmethod
     def downloads_from_key(hapi, key):
         """Returns a list of HumbleDownload objetcts from a key string"""
         humble_downloads = []
         current_order = hapi.get_order(key)
+        logger.display_message(False, "Processing",
+            "{0} is product: {1}".format(key, current_order.product.human_name))
         for current_subproduct in current_order.subproducts or []:
             for current_download in current_subproduct.downloads or []:
                 if not ConfigData.download_platforms.get(
                         current_download.platform, False):
                     continue
                 for current_dl_struct in current_download.download_structs:
+                    if HumbleDownload.download_is_excluded(current_download.platform, current_dl_struct.filename):
+                        print("skipping excluded download: " +
+                              current_dl_struct.filename)
+                        continue
                     hd = HumbleDownload(current_download,
                                         current_dl_struct,
                                         current_order,

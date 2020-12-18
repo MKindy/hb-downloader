@@ -5,7 +5,7 @@ from hb_downloader import logger
 from hb_downloader.humble_api.events import Events
 
 __author__ = "Brian Schkerke"
-__copyright__ = "Copyright 2016 Brian Schkerke"
+__copyright__ = "Copyright 2020 Brian Schkerke"
 __license__ = "MIT"
 
 
@@ -21,7 +21,7 @@ class EventHandler(object):
 
     @staticmethod
     def print_md5_start(filename):
-        logger.display_message(False, "Checksum", "%s: " % filename, False)
+        logger.display_message(False, "Checksum", "{0}: {1:7.2f}% ".format(filename, 0), False)
         sys.stdout.flush()
 
     @staticmethod
@@ -30,14 +30,15 @@ class EventHandler(object):
 
     @staticmethod
     def print_download_start(filename):
-        logger.display_message(False, "Download", "%s: " % filename, False)
+        logger.display_message(False, "Download", "{0}: {1:7.2f}% ".format(filename, 0), False)
         sys.stdout.flush()
 
     @staticmethod
     def print_download_end(filename):
-        print("")
+        sys.stdout.write(" \b\b\b\b\b\b\b\b\b\bfinished.\n")
+        sys.stdout.flush()
 
     @staticmethod
     def print_progress(percentage):
-        sys.stdout.write("{0:.0f}% ".format(percentage))
+        sys.stdout.write(" \b\b\b\b\b\b\b\b\b\b{0:7.2f}% ".format(percentage))
         sys.stdout.flush()
