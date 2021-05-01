@@ -4,23 +4,16 @@
 import argparse
 import os
 import yaml
-<<<<<<< HEAD:hb_downloader/configuration.py
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
 from hb_downloader import logger
 from hb_downloader.config_data import ConfigData
+from hb_downloader.humble_api.humble_api import HumbleApi
 from hb_downloader.humble_api.humble_hash import HumbleHash
-=======
-from . import logger
-from .config_data import ConfigData
-from .humble_api.humble_hash import HumbleHash
-from .humble_api.humble_api import HumbleApi
->>>>>>> 2e1e56b7f14de1fa94401d32813b31d1950bb357:humble_downloader/configuration.py
 
 __author__ = "Brian Schkerke"
 __copyright__ = "Copyright 2020 Brian Schkerke"
 __license__ = "MIT"
-
 
 class Configuration(object):
     cmdline_platform = {}  # Mapping between hb convention and ours
@@ -162,13 +155,9 @@ class Configuration(object):
             games.add_argument(
                     "--platform", nargs='+', choices=[  # TODO: add NATIVE?
                             "linux", "mac", "windows", "android", "asmjs"])
-<<<<<<< HEAD:hb_downloader/configuration.py
-            item_type.add_parser("ebooks")
-            item_type.add_parser("audio")
-            item_type.add_parser("all")
-=======
             item_type.add_parser("ebooks", help="Only list ebooks")
             item_type.add_parser("audio", help="Only display audio products")
+            item_type.add_parser("all")
             if action is a_list:
                 item_type.add_parser("humble-keys", help=(
                     "Only list humble bundle keys that identify each "
@@ -176,7 +165,6 @@ class Configuration(object):
             action.add_argument("-k", "--keys", nargs="+", help=(
                 "Only consider listed game key(s). Humble trove games are "
                 'considered a special "' + HumbleApi.TROVE_GAMEKEY + '" key'))
->>>>>>> 2e1e56b7f14de1fa94401d32813b31d1950bb357:humble_downloader/configuration.py
 
         args = parser.parse_args()
 
@@ -196,7 +184,6 @@ class Configuration(object):
             args.print_url = False
 
         if args.action is not None:
-<<<<<<< HEAD:hb_downloader/configuration.py
             if args.action == "download-product":
                 args.platform = None
                 ConfigData.download_product = args.download_product
@@ -208,8 +195,6 @@ class Configuration(object):
             elif args.platform is None:
                 args.platform = Configuration.cmdline_platform.get(
                         args.item_type)
-=======
->>>>>>> 2e1e56b7f14de1fa94401d32813b31d1950bb357:humble_downloader/configuration.py
             for platform in ConfigData.download_platforms:
                 if args.platform is None:
                     continue
@@ -272,7 +257,6 @@ class Configuration(object):
                     True, "Config", "Platform %s=%s" %
                     (platform, ConfigData.download_platforms[platform]))
 
-<<<<<<< HEAD
         for atype in list(ConfigData.audio_types.keys()):
             logger.display_message(
                     True, "Config", "Audio Types %s=%s" %
@@ -282,12 +266,10 @@ class Configuration(object):
             logger.display_message(
                     True, "Config", "ebook Types %s=%s" %
                     (etypes, ConfigData.ebook_types[etypes]))
-=======
         if ConfigData.file_extensions:
             logger.display_message(
                 True, "Config", "file_extensions=%s" %
                 ConfigData.file_extensions)
->>>>>>> c1e499a9300dccfea9f58b12a80eabf0502fe75a
 
     @staticmethod
     def push_configuration():

@@ -3,17 +3,11 @@
 
 import os
 import requests
-<<<<<<< HEAD:hb_downloader/humble_download.py
 from hb_downloader.config_data import ConfigData
 from hb_downloader.humble_api.events import Events
 from hb_downloader.humble_api.humble_hash import HumbleHash
+from hb_downloader.humble_api.model.trove_order import TroveOrder
 from hb_downloader import logger
-=======
-from .config_data import ConfigData
-from .humble_api.events import Events
-from .humble_api.humble_hash import HumbleHash
-from .humble_api.model.trove_order import TroveOrder
->>>>>>> 2e1e56b7f14de1fa94401d32813b31d1950bb357:humble_downloader/humble_download.py
 
 __author__ = "Brian Schkerke"
 __copyright__ = "Copyright 2020 Brian Schkerke"
@@ -116,15 +110,6 @@ class HumbleDownload(object):
         """
 
         # TODO HK: add options for path structure from commandline and or cfg file
-<<<<<<< HEAD
-<<<<<<< HEAD
-        
-=======
-
->>>>>>> ced77c22d6cd2978ec4fd0902d284a7c8b480226
-=======
-
->>>>>>> c1e499a9300dccfea9f58b12a80eabf0502fe75a
         if not ConfigData.folderstructure_OrderName:
             temp_full_filename = os.path.join(
                 ConfigData.download_location,
@@ -135,15 +120,6 @@ class HumbleDownload(object):
                 ConfigData.download_location,
                 self.product_name_machine, self.subproduct_name, self.platform,
                 self.filename)
-<<<<<<< HEAD
-<<<<<<< HEAD
-        
-=======
-
->>>>>>> ced77c22d6cd2978ec4fd0902d284a7c8b480226
-=======
-
->>>>>>> c1e499a9300dccfea9f58b12a80eabf0502fe75a
         return temp_full_filename
 
     def remove(self):
@@ -249,24 +225,10 @@ class HumbleDownload(object):
         """ Creates the directory for storing the current file if it doesn't
             exist.
         """
-<<<<<<< HEAD
-<<<<<<< HEAD
-        
-=======
-
->>>>>>> ced77c22d6cd2978ec4fd0902d284a7c8b480226
-=======
-
->>>>>>> c1e499a9300dccfea9f58b12a80eabf0502fe75a
         # TODO HK: add options for path structure from commandline and or cfg file
 
         # full_directory = os.path.join(ConfigData.download_location,
         #                               self.order_number, self.subproduct_name, self.platform)
-<<<<<<< HEAD
-        
-        full_directory = os.path.join(ConfigData.download_location,
-                                      self.product_name_machine, self.subproduct_name, self.platform)
-=======
 
         if not ConfigData.folderstructure_OrderName:
             full_directory = os.path.join(ConfigData.download_location,
@@ -274,7 +236,6 @@ class HumbleDownload(object):
         else:
             full_directory = os.path.join(ConfigData.download_location,
                                           self.product_name_machine, self.subproduct_name, self.platform)
->>>>>>> ced77c22d6cd2978ec4fd0902d284a7c8b480226
 
 
         if not os.path.exists(full_directory):
@@ -380,21 +341,14 @@ class HumbleDownload(object):
                         current_download.platform, False):
                     continue
                 for current_dl_struct in current_download.download_structs:
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    if "flac" in current_dl_struct.filename:
-                        print("no flacs: skipping: " + current_dl_struct.filename)
-=======
                     if HumbleDownload.download_is_excluded(current_download.platform, current_dl_struct.filename):
                         print("skipping excluded download: " +
                               current_dl_struct.filename)
->>>>>>> ced77c22d6cd2978ec4fd0902d284a7c8b480226
-=======
+
                     # Check maximun file size
                     if (ConfigData.max_file_size and
                         current_dl_struct.file_size is not None and
                         current_dl_struct.file_size / 1048576 > ConfigData.max_file_size):
->>>>>>> c1e499a9300dccfea9f58b12a80eabf0502fe75a
                         continue
 
                     # Check file extensions

@@ -1,110 +1,88 @@
-=======
 # hb-downloader
-[![Coverage Status](https://coveralls.io/repos/github/MayeulC/hb-downloader/badge.svg)](https://coveralls.io/github/MayeulC/hb-downloader)
-[![Build Status](https://travis-ci.org/MayeulC/hb-downloader.svg)](https://travis-ci.org/MayeulC/hb-downloader)
+[![Coverage Status](https://coveralls.io/repos/github/MKindy/hb-downloader/badge.svg)](https://coveralls.io/github/MKindy/hb-downloader)
+[![Build Status](https://travis-ci.org/MKindy/hb-downloader.svg)](https://travis-ci.org/MKindy/hb-downloader)
 
-An automated utility to download your Humble Bundle purchases
+An automated utility to download your Humble Bundle purchases.
 
     http://www.humblebundle.com
 
 This package is not endorsed, supported, or affiliated with Humble Bundle, Inc.
 
-It is distributed under the MIT license, you may use, modify and redistribute
-it freely provided you agree with the terms of that license, that can be found
-online or under the accompanying LICENSE file.
+It is distributed under the MIT license. You may use, modify, and redistribute it freely provided you agree with the terms of the license, found in the accompanying LICENSE file or online at [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT).
 
-This is a fork with additionnal functionnality and fixes of the software
-originally distributed by Brian Schkerke and available at
-https://github.com/talonius/hb-downloader
+This is a fork with additional functionality and fixes of the software originally distributed by Brian Schkerke and available at [https://github.com/talonius/hb-downloader](https://github.com/talonius/hb-downloader).
 
-This repository contains code from Joel Pedraza's awesome humblebundle-python
-library, available at https://github.com/saik0/humblebundle-python
+This repository contains code from Joel Pedraza's awesome `humblebundle-python` library, available at [https://github.com/saik0/humblebundle-python](https://github.com/saik0/humblebundle-python).
 
 ## Requirements
 * Python 3.6
 * requests library
 * pyyaml library
-* (optionnally for Humble Trove support) lxml
+* lxml _(optional, for Humble Trove support)_
 
 ## Python Installation
-Several features particular to Python v3.6 might have been used during the
-development of this script.  To install Python v3.6 visit
-https://www.python.org/downloads/ and grab the latest 3.x.x release.
+Several features particular to Python v3.6 might have been used during the development of this script.  To install Python v3.6 visit [https://www.python.org/downloads/](https://www.python.org/downloads/) and grab the latest 3.x.x release.
 
 ## Getting the Prerequisites
 From a command prompt, enter:
 
     pip install requests pyyaml lxml
 
-You'll either be informed that the requirement is already satisfied, or pip
-will retrieve, install, and configure the libraries for you.
+You'll either be informed that the requirement is already satisfied, or `pip` will retrieve, install, and configure the libraries for you.
 
 Alternatively, you can run the `setup.py` script.
 
-## Getting the Installation Files
+## Getting the Script Files
 Perform one of the following actions:
-* Download the zip file from the [releases
-  page](https://github.com/MayeulC/hb-downloader/releases) and unzip it to the
-  directory of your choice.
-* Download the latest code from the [master
-  branch](https://github.com/MayeulC/hb-downloader/archive/master.zip) as a zip
-  file
-* Check out the source with Git:
-  `git clone git://github.com/MayeulC/hb-downloader.git`
+* Download the latest code from the [master branch](https://github.com/MKindy/hb-downloader/archive/master.zip) as a zip file; or
+* Check out the source with Git: `git clone https://github.com/MKindy/hb-downloader.git`
 
-## Installation
-After getting the installation files, you then need to fetch your
-authentication cookie from humblebundle.com.  To do so, navigate there, log in
-and press F12 to open the developper tools of your browser. Navigate to the
-cookies tab, and look for a cookie named `_simple_auth` (on the
-humblebundle.com domain). Make a copy of the `hb-downloader-settings.yaml.example` to `hb-downloader-settings.yaml`. Copy the value inside the
-`hb-downloader-settings.yaml` file, or specify it on the command line with the
-"-c" flag. Pay attention that every character is correctly escaped according to
-the method you choose.
+## Configuring the Script
+`hb-downloader-settings.yaml` is the configuration file for the script.  It contains all of the information that can be overridden during script execution trough the command line interface. The format is:
 
-`hb-downloader-settings.yaml` is the configuration file for the script.  It
-contains all of the information that can be overridden during script execution
-trough the command line interface. The format (for the data we're concerned
-with) is:
- 
-     <variable name>: <variable value>
+    <variable name>: <variable value>
 
-download-location is where you want the files to be stored during and after
-their download from humblebundle.com.  This location needs to exist and be
-writable by the user executing the script.  It can be a Linux style directory
-(`/mnt/Mila/Games/Humble Bundle`), a UNC share
-(`\\megatron\mila\games\humble bundle`) or a Windows drive reference
-(`C:\Users\Username\Downloads`):
+Or:
 
-    download-location:  \\megatron\mila\games\humble bundle
+    <variable group>:
+      <variable name>: <variable value>
+
+The first thing you will need is to fetch your authentication cookie from humblebundle.com.  To do so, open [https://www.humblebundle.com/](https://www.humblebundle.com/), log in, and once logged in press F12 to open your browser's developer tools:
+* In Firefox's Developer Tools, select the "Storage" tab and there look for the "Cookies" drop-down menu;
+* In Chrome's Developer Tools, select the "Application" tab and there look for the "Cookies" drop-down menu under the "Storage" menu;
+** Safari, Opera, Vivaldi, Brave, and Edge will have similar layouts to Chrome; Safari's developer tools must be separately enabled, as explained in the [online Safari User Guide](https://support.apple.com/guide/safari/use-the-developer-tools-in-the-develop-menu-sfri20948/mac);
+* In Internet Explorer, navigate to your preference of either [https://mozilla.org/firefox/](https://mozilla.org/firefox/) or [https://google.com/chrome/](https://google.com/chrome/), install your chosen browser, and then follow the steps above;
+* In any of a number of alternative browser engines, you're on your own, but you'll probably figure it out fine, since you're the kind of enthusiast who's using a browser with essentially no market share;
+Select the cookie for `https://www.humblebundle.com` and look for the variable named `_simple_auth` and copy its value, which will look like:
+
+    <92-digit alphanumeric (base 62) number>|<10-digit decimal (base 10) number>|<40-digit hexadecimal (base 16) number>
+
+Paste this value in single quotes in the `session-cookie` setting of the `hb-downloader-settings.yaml` file. You may alternatively choose to specify it on the command line with the `-c` flag, being sure to escape the `|` character accordingly.
+
+`download-location` is where you want the files to be stored as they are downloaded from humblebundle.com.  This location needs to already exist and be writable by the user executing the script.  It can be a Linux style directory (`/mnt/mark/Downloads/Humble`), a shared folder via a UNC path (`\\192.168.0.2\mark\Downloads\Humble`) or a Windows drive reference (`Z:\mark\Downloads\Humble`).
+
+As configured, the settings file will tell the script to download every file in your Humble library. You may make further modifications to the `max-file-size` setting or to any or all of the `download-platforms`, `audio_types`, `ebook_types`, and/or `file-extensions` variable group settings to limit what gets downloaded.  It is unlikely you will need to make changes to any of the other settings.
 
 ## Issues
-If you encounter any issues or have suggestions, please [open a **NEW**
-issue](https://github.com/MayeulC/hb-downloader/issues) on GitHub.
+If you encounter any issues or have suggestions, please [open a new issue](https://github.com/MKindy/hb-downloader/issues) on GitHub.
 
 ## Known Issues
-If you run the script in a terminal window under Windows you may receive:
+If you run the script in a Windows terminal or PowerShell session, you may encounter this error:
 
      UnicodeEncodeError: 'charmap' codec can't encode character...
-     
-This only happens if you have an extended character in the name of one of your
-products.  The easiest fix is to export an environment variable so that Python
-knows the terminal can accept Unicode:
 
-    set PYTHONIOENCODING=UTF-8
->>>>>>> 2e1e56b7f14de1fa94401d32813b31d1950bb357
+This only happens if you have an extended character in the name of one of your products.  The easiest fix is to export an environment variable so that Python knows the terminal can accept Unicode; in your Windows terminal or PowerShell session, run `set PYTHONIOENCODING=UTF-8` to set the variable immediately, followed by `setx PYTHONIOENCODING=UTF-8` which will persist the variable even after you close the terminal.
 
 ## Usage examples
-
-```sh
-# Both of these will just download all the stuff according to your config files
+```bash
+# Both of these will just download all the stuff according to your config files:
 hb-downloader.py
 hb-downloader.py download
 
-# lists all your products (bundles) and subproducts (the )
+# Lists all your products (the bundles) and subproducts (the individual titles):
 hb-downloader.py list
 
-# will download a single bundle either from email link or game-key
-hb-downloader.py download-product <get your bundle url from an email>
+# Will download a single bundle either from email link or game-key:
+hb-downloader.py download-product <bundle url>
 hb-downloader.py download-product <product key>
 ```

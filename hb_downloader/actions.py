@@ -3,18 +3,10 @@
 
 __license__ = "MIT"
 
-<<<<<<< HEAD:hb_downloader/actions.py
 from hb_downloader.humble_download import HumbleDownload
 from hb_downloader.progress_tracker import ProgressTracker
 from hb_downloader.config_data import ConfigData
 from hb_downloader import logger
-=======
-from .humble_download import HumbleDownload
-from .progress_tracker import ProgressTracker
-from .config_data import ConfigData
-from . import logger
->>>>>>> 2e1e56b7f14de1fa94401d32813b31d1950bb357:humble_downloader/actions.py
-
 
 class Action:
     @staticmethod
@@ -24,13 +16,9 @@ class Action:
                 print("%s" % key)
                 continue
             selector_matched_key_once = False
-<<<<<<< HEAD:hb_downloader/actions.py
             current_order = hapi.get_order(key, ConfigData.get_extra_file_info)
-=======
-            current_order = hapi.get_order(key)
             if 'subproducts' not in current_order:
                 continue
->>>>>>> 2e1e56b7f14de1fa94401d32813b31d1950bb357:humble_downloader/actions.py
 
             for current_subproduct in current_order.subproducts or []:
                 selector_matched_subproduct_once = False

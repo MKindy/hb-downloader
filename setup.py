@@ -1,16 +1,11 @@
-<<<<<<< HEAD
-=======
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
-
 
 import os
 from setuptools import setup, find_packages
 
-
 def read(file_name):
     return open(os.path.join(os.path.dirname(__file__), file_name)).read()
-
 
 setup(
     name="hb_downloader",  # your package name (i.e. for import)
@@ -38,4 +33,3 @@ setup(
     ],
     zip_safe=True,
 )
->>>>>>> 2e1e56b7f14de1fa94401d32813b31d1950bb357

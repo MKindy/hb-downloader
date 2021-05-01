@@ -2,18 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import sys
-<<<<<<< HEAD:hb_downloader/event_handler.py
 from hb_downloader import logger
 from hb_downloader.humble_api.events import Events
-=======
-from . import logger
-from .humble_api.events import Events
->>>>>>> 2e1e56b7f14de1fa94401d32813b31d1950bb357:humble_downloader/event_handler.py
 
 __author__ = "Brian Schkerke"
 __copyright__ = "Copyright 2020 Brian Schkerke"
 __license__ = "MIT"
-
 
 class EventHandler(object):
     @staticmethod

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-<<<<<<< HEAD
+
 import os
 import hb_downloader.logger as logger
 from hb_downloader.config_data import ConfigData
@@ -14,9 +14,11 @@ __copyright__ = "Copyright 2020 Brian Schkerke"
 __license__ = "MIT"
 
 # Actual contributors to this project:
-# Real Names:  Mayeul Cantan, Claudius Coenen, Katrin Leinweber, Tobi Grimm
-# GitHub Aliases:  badp, wjp, humor4fun, ectotropic, bspeice
-# Please email Brian Schkerke (bmschkerke@gmail.com) with your real name if 
+# Real Names:  Mayeul Cantan, Claudius Coenen, Katrin Leinweber, Tobi Grimm, Mark Kindy
+# GitHub Aliases:  badp, wjp, humor4fun, ectotropic, bspeice, MKindy
+# Copyright 2016-2020, MIT License (https://opensource.org/licenses/MIT)
+#
+# Please email Brian Schkerke (bmschkerke@gmail.com) with your real name if
 #      you want it listed instead of your alias.
 
 print("Humble Bundle Downloader v%s" % ConfigData.VERSION)
@@ -87,4 +89,5 @@ elif ConfigData.action == "download-product":
             ', '.join(game_keys))
 else:
     Action.list_downloads(hapi, game_keys)
-=======
+
+exit()
