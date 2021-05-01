@@ -1,17 +1,41 @@
-from setuptools import setup
+<<<<<<< HEAD
+=======
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
 
-setup(name='hb_downloader',
-      version='0.5.0',
-      description='an unofficial api client for humblebundle',
-      url='https://github.com/MayeulC/hb-downloader/releases',
-      author='Brian Schkerke',
-      license='MIT',
-      packages=[
-          'hb_downloader',
-          'hb_downloader.humble_api',
-          'hb_downloader.humble_api.model',
-          'hb_downloader.humble_api.exceptions'
-          ],
-      test_suite='nose.collector',
-      tests_require=['nose'],
-      zip_safe=False)
+
+import os
+from setuptools import setup, find_packages
+
+
+def read(file_name):
+    return open(os.path.join(os.path.dirname(__file__), file_name)).read()
+
+
+setup(
+    name="hb_downloader",  # your package name (i.e. for import)
+    version="0.7.0",
+    maintainer="Mark Kindy",
+    maintainer_email="MKindy@gmail.com",
+    author="Brian Schkerke, Mayeul Cantan, Claudius Coenen, Katrin Leinweber, Tobi Grimm, Mark Kindy",
+    author_email="N/A, mayeul.cantan@live.fr, N/A, N/A, N/A, MKindy@gmail.com",
+    description="An automated utility to download your Humble Bundle purchases.",
+    license="MIT",
+    keywords="humble bundle download games",
+    url="https://github.com/MKindy/hb-downloader",
+    packages=find_packages(exclude=["*test*", "*TEST*"]),
+    install_requires=[
+        'requests',
+        'pyyaml',
+        'lxml'
+    ],
+    long_description=read('README.md'),
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Topic :: Utilities",
+        "License :: OSI Approved :: MIT",
+        "Natural Language :: English"
+    ],
+    zip_safe=True,
+)
+>>>>>>> 2e1e56b7f14de1fa94401d32813b31d1950bb357

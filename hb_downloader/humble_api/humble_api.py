@@ -3,6 +3,7 @@
 import http.cookiejar
 import itertools
 from .model.order import Order
+from .model.trove_order import TroveOrder
 import requests
 from .exceptions.humble_response_exception import HumbleResponseException
 from .exceptions.humble_parse_exception import HumbleParseException
@@ -29,6 +30,10 @@ class HumbleApi(object):
     LOGIN_URL = "https://www.humblebundle.com/processlogin"
     ORDER_LIST_URL = "https://www.humblebundle.com/api/v1/user/order"
     ORDER_URL = "https://www.humblebundle.com/api/v1/order/{order_id}"
+    TROVE_SIGN_URL= "https://www.humblebundle.com/api/v1/user/download/sign"
+    TROVE_PAGE_URL = "https://www.humblebundle.com/api/v1/trove/chunk?index={chunk_index}"
+
+    TROVE_GAMEKEY = TroveOrder.TROVE_GAMEKEY  # Arbitrary gamekey used to identify humble trove orders
 
     # default_headers specifies the default HTTP headers added to each request sent to the humblebundle.com servers.
     default_headers = {
@@ -83,6 +88,22 @@ class HumbleApi(object):
         except HumbleAuthenticationException:
             return False
 
+    def get_signed_trove_url(self, machine_name, filename):
+        """
+            Transforms a machine name and a filename into valid URLs for the humble trove
+            parameters: machine name, filename
+
+            :param machine_name: A name given by humblebundle to the subproduct
+            :param filename: a name given by humblebundle to the downloaded file, as seen in the URL
+            :return: dict with signed_torrent_url and signed_url
+        """
+        parameters = {"machine_name": machine_name, "filename": filename}
+        response = self._request("POST", HumbleApi.TROVE_SIGN_URL, data=parameters)
+        data = self.__parse_data(response)
+
+        if self.__authenticated_response_helper(response, data):
+            return data
+
     def get_gamekeys(self, *args, **kwargs):
         """
             Fetch all the gamekeys owned by an account.
@@ -103,7 +124,9 @@ class HumbleApi(object):
         data = self.__parse_data(response)
 
         if isinstance(data, list):
-            return [v["gamekey"] for v in data]
+            keys = [v["gamekey"] for v in data]
+            keys.append(HumbleApi.TROVE_GAMEKEY)  # Unconditionnally include the humble trove key
+            return keys
 
         # Let the helper function raise any common exceptions
         self.__authenticated_response_helper(response, data)
@@ -125,6 +148,8 @@ class HumbleApi(object):
             :raises HumbleResponseException: if the response was invalid
         """
         url = HumbleApi.ORDER_URL.format(order_id=order_id)
+        if order_id == HumbleApi.TROVE_GAMEKEY:
+            return self.get_trove_items()
 
         response = self._request("GET", url, *args, **kwargs)
 
@@ -138,6 +163,29 @@ class HumbleApi(object):
         # The helper function should be sufficient to catch any other errors
         if self.__authenticated_response_helper(response, data):
             return Order(data, get_extra_file_info)
+
+    def get_trove_items(self):
+        """
+            get element from trove making request on hb api
+        """
+        trove_data_element = []
+        chunk_index = 0
+
+        while True:
+            url = HumbleApi.TROVE_PAGE_URL.format(chunk_index=chunk_index)
+            response = self._request("GET", url)
+            """ get_gamekeys response always returns JSON """
+            data = self.__parse_data(response)
+            """ [] as response mean that we have tried all the chunk_index """
+            if(data == []):
+                break
+            else:
+                """ Make a flat list for trove_data_element """
+                for i in data:
+                    trove_data_element.append(i)
+                chunk_index = chunk_index + 1
+        
+        return TroveOrder(trove_data_element, self)  # TODO error handling
 
     def _request(self, *args, **kwargs):
         """
@@ -180,7 +228,8 @@ s             errors.
         # Response had no success or errors fields, it's probably data
         return True
 
-    def __parse_data(self, response):
+    @staticmethod
+    def __parse_data(response):
         """
             Try and parse the response data as JSON.  If parsing fails, throw a HumbleParseException.
 
@@ -194,7 +243,8 @@ s             errors.
         except ValueError as e:
             raise HumbleParseException("Invalid JSON: %s", str(e), request=response.request, response=response)
 
-    def __get_errors(self, data):
+    @staticmethod
+    def __get_errors(data):
         """
             Retrieves any errors defined within the JSON and returns them as a string.
 

@@ -1,13 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 import argparse
 import os
 import yaml
+<<<<<<< HEAD:hb_downloader/configuration.py
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
 from hb_downloader import logger
 from hb_downloader.config_data import ConfigData
 from hb_downloader.humble_api.humble_hash import HumbleHash
+=======
+from . import logger
+from .config_data import ConfigData
+from .humble_api.humble_hash import HumbleHash
+from .humble_api.humble_api import HumbleApi
+>>>>>>> 2e1e56b7f14de1fa94401d32813b31d1950bb357:humble_downloader/configuration.py
 
 __author__ = "Brian Schkerke"
 __copyright__ = "Copyright 2020 Brian Schkerke"
@@ -52,7 +60,6 @@ class Configuration(object):
         """
         with open(config_file, "r") as f:
             saved_config = yaml.safe_load(f)
-
         ConfigData.download_platforms = saved_config.get(
                 "download-platforms", ConfigData.download_platforms)
         ConfigData.audio_types = saved_config.get(
@@ -144,20 +151,33 @@ class Configuration(object):
             help="Product Key (looks like a bunch of garbled letters)"
             )
 
-        for action in [a_list, a_download]:
-            item_type = action.add_subparsers(title="type", dest="item_type")
-            games = item_type.add_parser("games")
-            games.add_argument(
-                    "--platform", nargs='+', choices=[  # TODO: add NATIVE?
-                            "linux", "mac", "windows", "android", "asmjs"])
-            item_type.add_parser("ebooks")
-            item_type.add_parser("audio")
-            item_type.add_parser("all")
-
         a_list.add_argument(
                 "-u", "--print-url", action="store_true", dest="print_url",
                 help=("Print the download url with the output. Please note "
                       "that the url expires after a while"))
+
+        for action in [a_list, a_download]:
+            item_type = action.add_subparsers(title="type", dest="item_type")
+            games = item_type.add_parser("games", help="Only list games")
+            games.add_argument(
+                    "--platform", nargs='+', choices=[  # TODO: add NATIVE?
+                            "linux", "mac", "windows", "android", "asmjs"])
+<<<<<<< HEAD:hb_downloader/configuration.py
+            item_type.add_parser("ebooks")
+            item_type.add_parser("audio")
+            item_type.add_parser("all")
+=======
+            item_type.add_parser("ebooks", help="Only list ebooks")
+            item_type.add_parser("audio", help="Only display audio products")
+            if action is a_list:
+                item_type.add_parser("humble-keys", help=(
+                    "Only list humble bundle keys that identify each "
+                    "purchase"))
+            action.add_argument("-k", "--keys", nargs="+", help=(
+                "Only consider listed game key(s). Humble trove games are "
+                'considered a special "' + HumbleApi.TROVE_GAMEKEY + '" key'))
+>>>>>>> 2e1e56b7f14de1fa94401d32813b31d1950bb357:humble_downloader/configuration.py
+
         args = parser.parse_args()
 
         Configuration.configure_action(args)
@@ -176,6 +196,7 @@ class Configuration(object):
             args.print_url = False
 
         if args.action is not None:
+<<<<<<< HEAD:hb_downloader/configuration.py
             if args.action == "download-product":
                 args.platform = None
                 ConfigData.download_product = args.download_product
@@ -187,17 +208,22 @@ class Configuration(object):
             elif args.platform is None:
                 args.platform = Configuration.cmdline_platform.get(
                         args.item_type)
+=======
+>>>>>>> 2e1e56b7f14de1fa94401d32813b31d1950bb357:humble_downloader/configuration.py
             for platform in ConfigData.download_platforms:
                 if args.platform is None:
-                    ConfigData.download_platforms[platform] = True
                     continue
                 if platform in args.platform:
                     ConfigData.download_platforms[platform] = True
-                else:
-                    ConfigData.download_platforms[platform] = False
+            # "fake platforms" can be defined to list info like humble keys
+            # TODO: only allow them for listing?
+            if args.item_type not in ConfigData.download_platforms:
+                ConfigData.download_platforms[args.item_type] = True
         else:
             args.action = "download"
+
         ConfigData.action = args.action
+        ConfigData.restrict_keys = args.keys
         ConfigData.print_url = args.print_url
 
     @staticmethod
