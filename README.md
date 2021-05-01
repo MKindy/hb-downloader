@@ -3,8 +3,9 @@
 [![Build Status](https://travis-ci.org/MKindy/hb-downloader.svg)](https://travis-ci.org/MKindy/hb-downloader)
 
 An automated utility to download your Humble Bundle purchases.
-
-    http://www.humblebundle.com
+```
+http://www.humblebundle.com
+```
 
 __This package is not endorsed, supported, or affiliated with Humble Bundle, Inc.__
 
@@ -25,8 +26,9 @@ Several features particular to Python v3.6 might have been used during the devel
 
 ## Getting the Prerequisites
 From the command line, run the command:
-
-<pre><font color="red">pip</font> install requests pyyaml lxml</pre>
+```
+pip install requests pyyaml lxml
+```
 
 You'll either be informed that the requirement is already satisfied, or `pip` will retrieve, install, and configure the libraries for you.
 
@@ -59,7 +61,7 @@ The first thing you will need is to fetch your authentication cookie from humble
 
 Select the cookie for `https://www.humblebundle.com` and look for the variable named `_simple_auth`. Its value will be 144 characters long, split up as shown below; copy its value and paste it within single quotes in the `session-cookie` setting of the `hb-downloader-settings.yaml` file; it should ultimately look like:
 ```YAML
-session-cookie: '<92-digit alphanumeric (base 62) number>|<10-digit number>|<40-digit hex number>'
+session-cookie: '<92-digit mixed-case alphanumeric>|<10-digit number>|<40-digit hex number>'
 ```
 
 You may alternatively choose to specify this cookie on the command line with the `-c` flag, being sure to escape the `|` character accordingly.
