@@ -3,8 +3,14 @@
 
 import sys
 import subprocess
+<<<<<<< HEAD:hb_downloader/test/test_parse_cmdline.py
 from hb_downloader.config_data import ConfigData
 from hb_downloader.configuration import Configuration
+=======
+from humble_downloader.config_data import ConfigData
+from humble_downloader.configuration import Configuration
+
+>>>>>>> 2e1e56b7f14de1fa94401d32813b31d1950bb357:test/test_parse_cmdline.py
 
 actions = ["download", "download-product", "list"]
 

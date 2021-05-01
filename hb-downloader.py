@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+<<<<<<< HEAD
 import os
 import hb_downloader.logger as logger
 from hb_downloader.config_data import ConfigData
@@ -86,6 +87,4 @@ elif ConfigData.action == "download-product":
             ', '.join(game_keys))
 else:
     Action.list_downloads(hapi, game_keys)
-
-
-exit()
+=======

@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+<<<<<<< HEAD:hb_downloader/logger.py
 from hb_downloader.config_data import ConfigData
+=======
+
+from .config_data import ConfigData
+>>>>>>> 2e1e56b7f14de1fa94401d32813b31d1950bb357:humble_downloader/logger.py
 import time
 import sys
 

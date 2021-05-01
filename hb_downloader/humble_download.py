@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 import os
 import requests
+<<<<<<< HEAD:hb_downloader/humble_download.py
 from hb_downloader.config_data import ConfigData
 from hb_downloader.humble_api.events import Events
 from hb_downloader.humble_api.humble_hash import HumbleHash
 from hb_downloader import logger
+=======
+from .config_data import ConfigData
+from .humble_api.events import Events
+from .humble_api.humble_hash import HumbleHash
+from .humble_api.model.trove_order import TroveOrder
+>>>>>>> 2e1e56b7f14de1fa94401d32813b31d1950bb357:humble_downloader/humble_download.py
 
 __author__ = "Brian Schkerke"
 __copyright__ = "Copyright 2020 Brian Schkerke"
@@ -57,6 +65,7 @@ class HumbleDownload(object):
         self.subproduct_name = csp.product_name
         self.humble_md5 = cds.md5
         self.machine_name = cd.machine_name
+        self.is_trove = isinstance(co, TroveOrder)
 
     @property
     def local_file_size(self):
@@ -167,7 +176,7 @@ class HumbleDownload(object):
                      self.local_file_size or 0))
             self.partial_download = True
             self.requires_download = True
-        elif not ConfigData.ignore_md5:
+        elif not ConfigData.ignore_md5 and not self.is_trove:
             if not self.md5_matches:
                 self.status_message = (
                         "MD5 of %s doesn't match (expected %s actual %s)." %
@@ -221,7 +230,8 @@ class HumbleDownload(object):
             # For a download that's resumed the content-length will be the
             # remaining bytes, not the total.
             # total_length = int(web_request.headers.get("content-length"))
-            total_length = self.humble_file_size
+            total_length = self.humble_file_size or int(
+                web_request.headers.get("content-length"))
             chunk_size = ConfigData.chunk_size
 
             for chunk in web_request.iter_content(chunk_size=chunk_size):
@@ -271,20 +281,23 @@ class HumbleDownload(object):
             os.makedirs(full_directory)
 
     def is_valid(self):
-        if self.humble_file_size is None or self.humble_file_size == 0:
-            self.status_message = ("Humble file size reported as 0. "
-                                   "Download is invalid.")
-            return False
         if self.download_url is None or len(self.download_url) == 0:
             self.status_message = ("Humble download URL is an empty string. "
                                    "Download is invalid.")
             return False
-        if self.humble_md5 is None or len(self.humble_md5) == 0:
-            self.status_message = ("Humble MD5 is an empty string. "
-                                   "Download is invalid.")
-            return False
         if self.filename is None or len(self.filename) == 0:
             self.status_message = ("Filename is an empty string. "
+                                   "Download is invalid.")
+            return False
+        if self.is_trove:
+            return True
+        if self.humble_file_size is None or self.humble_file_size == 0:
+            self.status_message = ("Humble file size reported as 0. "
+                                   "Download is invalid.")
+            print("size reported as 0")
+            return False
+        if self.humble_md5 is None or len(self.humble_md5) == 0:
+            self.status_message = ("Humble MD5 is an empty string. "
                                    "Download is invalid.")
             return False
 

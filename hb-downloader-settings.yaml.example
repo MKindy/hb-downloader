@@ -1,0 +1,52 @@
+# For authentication, paste a session cookie from your browser here, in single quotes
+session-cookie: ''
+download-location: /home/brian/hbd2/test/
+chunk-size: 8192000
+force_md5: False
+write_md5: True
+read_md5: True
+debug: False
+get_extra_file_info: False
+# max file size in MB
+max-file-size: 1000
+
+
+default_headers:
+  Accept: application/json
+  Accept-Charset: utf-8
+  Keep-Alive: True
+  X-Requested-By: hb_android_app
+  User-Agent: Apache-HttpClient/UNAVAILABLE (java 1.4)
+
+default_params:
+  ajax: True
+
+download-platforms:
+  audio: True
+  video: True
+  ebook: True
+  windows: True
+  mac: True
+  linux: True
+  android: True
+  asmjs: False
+
+<<<<<<< HEAD
+audio_types:
+  flac: True
+  ogg: True
+  mp3: True
+  other: True
+
+ebook_types:
+  epub: True
+  pdf: True
+  mobi: True
+  other: True
+=======
+# Only files with the following extensions are downloaded (or
+# everything when not configured):
+file-extensions:
+  - .mobi
+  - .pdf
+>>>>>>> c1e499a9300dccfea9f58b12a80eabf0502fe75a
