@@ -24,7 +24,7 @@ This repository contains code from Joel Pedraza's awesome `humblebundle-python` 
 Several features particular to Python v3.6 might have been used during the development of this script.  To install Python v3.6 visit [https://www.python.org/downloads/](https://www.python.org/downloads/) and grab the latest 3.x.x release.
 
 ## Getting the Prerequisites
-From a command prompt, enter:
+From the command line, run the command:
 
     pip install requests pyyaml lxml
 
@@ -50,7 +50,7 @@ Or:
 The first thing you will need is to fetch your authentication cookie from humblebundle.com.  To do so, open [https://www.humblebundle.com/](https://www.humblebundle.com/), log in, and once logged in press F12 to open your browser's developer tools:
 * In Firefox's Developer Tools, select the "Storage" tab and there look for the "Cookies" drop-down menu;
 * In Chrome's Developer Tools, select the "Application" tab and there look for the "Cookies" drop-down menu under the "Storage" menu;
-** Safari, Opera, Vivaldi, Brave, and Edge will have similar layouts to Chrome; Safari's developer tools must be separately enabled, as explained in the [online Safari User Guide](https://support.apple.com/guide/safari/use-the-developer-tools-in-the-develop-menu-sfri20948/mac);
+  * Safari, Opera, Vivaldi, Brave, and Edge will have similar layouts to Chrome; Safari's developer tools must be separately enabled, as explained in the [online Safari User Guide](https://support.apple.com/guide/safari/use-the-developer-tools-in-the-develop-menu-sfri20948/mac);
 * In Internet Explorer, navigate to your preference of either [https://mozilla.org/firefox/](https://mozilla.org/firefox/) or [https://google.com/chrome/](https://google.com/chrome/), install your chosen browser, and then follow the steps above;
 * In any of a number of alternative browser engines, you're on your own, but you'll probably figure it out fine, since you're the kind of enthusiast who's using a browser with essentially no market share;
 Select the cookie for `https://www.humblebundle.com` and look for the variable named `_simple_auth` and copy its value, which will look like:
