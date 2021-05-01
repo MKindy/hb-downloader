@@ -56,8 +56,9 @@ The first thing you will need is to fetch your authentication cookie from humble
 * In any of a number of alternative browser engines, you're on your own, but you'll probably figure it out fine, since you're the kind of enthusiast who's using a browser with essentially no market share;
 
 Select the cookie for `https://www.humblebundle.com` and look for the variable named `_simple_auth` and copy its value, which will look like:
-
+```pwsh
     <92-digit alphanumeric (base 62) number>|<10-digit decimal number>|<40-digit hexadecimal number>
+```
 
 Paste this value in single quotes in the `session-cookie` setting of the `hb-downloader-settings.yaml` file. You may alternatively choose to specify it on the command line with the `-c` flag, being sure to escape the `|` character accordingly.
 
@@ -70,8 +71,9 @@ If you encounter any issues or have suggestions, please [open a new issue](https
 
 ## Known Issues
 If you run the script in a Windows terminal or PowerShell session, you may encounter this error:
-
+```pwsh
      UnicodeEncodeError: 'charmap' codec can't encode character...
+```
 
 This only happens if you have an extended character in the name of one of your products.  The easiest fix is to export an environment variable so that Python knows the terminal can accept Unicode; in your Windows terminal or PowerShell session, run:
 ```pwsh
