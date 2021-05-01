@@ -80,7 +80,7 @@ download-location: \\192.168.0.2\mark\Downloads\Humble\
 
 The rest of `hb-downloader-settings.yaml`, as configured, will tell the script to download every file in your Humble library. You may make further modifications to the `max-file-size` setting or to any or all of the `download-platforms`, `audio_types`, `ebook_types`, and/or `file-extensions` variable group settings to limit what gets downloaded.
 
-It is unlikely you will need to make changes to any of the other settings.
+It is unlikely you will need to make changes to any of the other undiscussed settings.
 
 ## Issues
 If you encounter any issues or have suggestions, please [open a new issue](https://github.com/MKindy/hb-downloader/issues) on GitHub.
