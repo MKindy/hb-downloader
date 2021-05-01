@@ -8,9 +8,9 @@ An automated utility to download your Humble Bundle purchases.
 
 __This package is not endorsed, supported, or affiliated with Humble Bundle, Inc.__
 
-It is distributed under the MIT license. You may use, modify, and redistribute it freely provided you agree with the terms of the license, found in the accompanying LICENSE file or online at [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT).
+This package is distributed under the MIT license. You may use, modify, and redistribute it freely provided you agree with the terms of the license, found in the accompanying LICENSE file or online at [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT).
 
-This is a fork with additional functionality and fixes of the software originally distributed by Brian Schkerke and available at [https://github.com/talonius/hb-downloader](https://github.com/talonius/hb-downloader).
+This repository is a fork with additional functionality and fixes of the software originally distributed by Brian Schkerke and available at [https://github.com/talonius/hb-downloader](https://github.com/talonius/hb-downloader).
 
 This repository contains code from Joel Pedraza's awesome `humblebundle-python` library, available at [https://github.com/saik0/humblebundle-python](https://github.com/saik0/humblebundle-python).
 
@@ -25,9 +25,8 @@ Several features particular to Python v3.6 might have been used during the devel
 
 ## Getting the Prerequisites
 From the command line, run the command:
-```PowerShell
-pip install requests pyyaml lxml
-```
+
+<pre style="color: red;">pip install requests pyyaml lxml</pre>
 
 You'll either be informed that the requirement is already satisfied, or `pip` will retrieve, install, and configure the libraries for you.
 
@@ -60,26 +59,38 @@ The first thing you will need is to fetch your authentication cookie from humble
 
 Select the cookie for `https://www.humblebundle.com` and look for the variable named `_simple_auth`. Its value will be 144 characters long, split up as shown below; copy its value and paste it within single quotes in the `session-cookie` setting of the `hb-downloader-settings.yaml` file; it should ultimately look like:
 ```YAML
-session-cookie: '<92-digit alphanumeric (base 62) number>|<10-digit decimal number>|<40-digit hexadecimal number>'
+session-cookie: '<92-digit alphanumeric (base 62) number>|<10-digit number>|<40-digit hex number>'
 ```
 
 You may alternatively choose to specify this cookie on the command line with the `-c` flag, being sure to escape the `|` character accordingly.
 
-The second thing you will need is to tell the script where you want to store the files.  `download-location` is that location; it can be a Linux-style directory (`/mnt/mark/Downloads/Humble`), a shared folder via a UNC path (`\\192.168.0.2\mark\Downloads\Humble`) or a Windows-style directory (`Z:\mark\Downloads\Humble`).
+The second thing you will need is to tell the script where you want to store the files.  `download-location` is that location; it can be a Linux-style or Windows-style directory, or a shared folder via a UNC path.  It must already exist; the script will not create the directory for you:
+```YAML
+# Linux-style:
+download-location: /mnt/mark/Downloads/Humble/
 
-As configured, the settings file will tell the script to download every file in your Humble library. You may make further modifications to the `max-file-size` setting or to any or all of the `download-platforms`, `audio_types`, `ebook_types`, and/or `file-extensions` variable group settings to limit what gets downloaded.  It is unlikely you will need to make changes to any of the other settings.
+# Windows-style:
+download-location: Z:\mark\Downloads\Humble\
+
+# UNC path:
+download-location: \\192.168.0.2\mark\Downloads\Humble\
+```
+
+The rest of `hb-downloader-settings.yaml`, as configured, will tell the script to download every file in your Humble library. You may make further modifications to the `max-file-size` setting or to any or all of the `download-platforms`, `audio_types`, `ebook_types`, and/or `file-extensions` variable group settings to limit what gets downloaded.
+
+It is unlikely you will need to make changes to any of the other settings.
 
 ## Issues
 If you encounter any issues or have suggestions, please [open a new issue](https://github.com/MKindy/hb-downloader/issues) on GitHub.
 
 ## Known Issues
 If you run the script in a Windows terminal or PowerShell session, you may encounter this error:
-```PowerShell
-UnicodeEncodeError: \'charmap\' codec can\'t encode character...
+```
+UnicodeEncodeError: 'charmap' codec can't encode character...
 ```
 
 This only happens if you have an extended character in the name of one of your products.  The easiest fix is to export an environment variable so that Python knows the terminal can accept Unicode; in your Windows terminal or PowerShell session, run:
-```Batchfile
+```T
 # "set" defines the environment variable immediately, without persistence
 set PYTHONIOENCODING=UTF-8
 # "setx" permanently defines the environment variable, but requires restart
@@ -88,7 +99,7 @@ setx PYTHONIOENCODING=UTF-8
 ```
 
 ## Usage examples
-```bash
+```sh
 # Both of these will just download all the stuff according to your config files:
 hb-downloader.py
 hb-downloader.py download
