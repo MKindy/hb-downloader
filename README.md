@@ -26,7 +26,8 @@ Several features particular to Python v3.6 might have been used during the devel
 ## Getting the Prerequisites
 From the command line, run the command:
 
-<pre style="color: red;">pip install requests pyyaml lxml</pre>
+<style>pre.red { color: red; }</style>
+<pre class="red">pip install requests pyyaml lxml</pre>
 
 You'll either be informed that the requirement is already satisfied, or `pip` will retrieve, install, and configure the libraries for you.
 
