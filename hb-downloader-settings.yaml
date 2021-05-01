@@ -1,0 +1,49 @@
+# For authentication, paste the value of your `_simple_auth` cookie from your
+#   browser here, in single quotes:
+session-cookie: ''
+download-location: \\path\to\download\location
+chunk-size: 8192000
+force_md5: False
+write_md5: True
+read_md5: True
+debug: False
+get_extra_file_info: False
+# Max file size in MB (default 1048576, or 1 tebibyte):
+max-file-size: 1048576
+
+default_headers:
+  Accept: application/json
+  Accept-Charset: utf-8
+  Keep-Alive: True
+  X-Requested-By: hb_android_app
+  User-Agent: Apache-HttpClient/UNAVAILABLE (java 1.4)
+
+default_params:
+  ajax: True
+
+download-platforms:
+  audio: True
+  video: True
+  ebook: True
+  windows: True
+  mac: True
+  linux: True
+  android: True
+  asmjs: False
+
+audio_types:
+  flac: True
+  ogg: True
+  mp3: True
+  other: True
+
+ebook_types:
+  epub: True
+  pdf: True
+  mobi: True
+  other: True
+
+# Limits downloads to only files with a given extension (or everything when not configured):
+#file-extensions:
+#  - .mobi
+#  - .pdf
