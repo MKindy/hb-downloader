@@ -29,7 +29,7 @@ download-platforms:
   mac: True
   linux: True
   android: True
-  asmjs: False
+  asmjs: True
 
 audio_types:
   flac: True
