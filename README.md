@@ -57,11 +57,11 @@ The first thing you will need is to fetch your authentication cookie from humble
 
 Select the cookie for `https://www.humblebundle.com` and look for the variable named `_simple_auth` and copy its value, which will look like:
 
-    <92-digit alphanumeric (base 62) number>|<10-digit decimal (base 10) number>|<40-digit hexadecimal (base 16) number>
+    <92-digit alphanumeric (base 62) number>|<10-digit decimal number>|<40-digit hexadecimal number>
 
 Paste this value in single quotes in the `session-cookie` setting of the `hb-downloader-settings.yaml` file. You may alternatively choose to specify it on the command line with the `-c` flag, being sure to escape the `|` character accordingly.
 
-`download-location` is where you want the files to be stored as they are downloaded from humblebundle.com.  This location needs to already exist and be writable by the user executing the script.  It can be a Linux style directory (`/mnt/mark/Downloads/Humble`), a shared folder via a UNC path (`\\192.168.0.2\mark\Downloads\Humble`) or a Windows drive reference (`Z:\mark\Downloads\Humble`).
+`download-location` is where you want the files to be stored as and after they are downloaded.  This location needs to already exist and be writable by the user executing the script.  It can be a Linux-style directory (`/mnt/mark/Downloads/Humble`), a shared folder via a UNC path (`\\192.168.0.2\mark\Downloads\Humble`) or a Windows-style directory (`Z:\mark\Downloads\Humble`).
 
 As configured, the settings file will tell the script to download every file in your Humble library. You may make further modifications to the `max-file-size` setting or to any or all of the `download-platforms`, `audio_types`, `ebook_types`, and/or `file-extensions` variable group settings to limit what gets downloaded.  It is unlikely you will need to make changes to any of the other settings.
 
@@ -73,10 +73,17 @@ If you run the script in a Windows terminal or PowerShell session, you may encou
 
      UnicodeEncodeError: 'charmap' codec can't encode character...
 
-This only happens if you have an extended character in the name of one of your products.  The easiest fix is to export an environment variable so that Python knows the terminal can accept Unicode; in your Windows terminal or PowerShell session, run `set PYTHONIOENCODING=UTF-8` to set the variable immediately, followed by `setx PYTHONIOENCODING=UTF-8` which will persist the variable even after you close the terminal.
+This only happens if you have an extended character in the name of one of your products.  The easiest fix is to export an environment variable so that Python knows the terminal can accept Unicode; in your Windows terminal or PowerShell session, run:
+```pwsh
+# "set" defines the environment variable immediately, without persistence
+set PYTHONIOENCODING=UTF-8
+# "setx" permanently defines the environment variable, but requires restart
+#    without "set" above:
+setx PYTHONIOENCODING=UTF-8
+```
 
 ## Usage examples
-```bash
+```pwsh
 # Both of these will just download all the stuff according to your config files:
 hb-downloader.py
 hb-downloader.py download
