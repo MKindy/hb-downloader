@@ -31,7 +31,7 @@ class HumbleApi(object):
     ORDER_LIST_URL = "https://www.humblebundle.com/api/v1/user/order"
     ORDER_URL = "https://www.humblebundle.com/api/v1/order/{order_id}"
     TROVE_SIGN_URL= "https://www.humblebundle.com/api/v1/user/download/sign"
-    TROVE_PAGE_URL = "https://www.humblebundle.com/api/v1/trove/chunk?index={chunk_index}"
+    TROVE_PAGE_URL = "https://www.humblebundle.com/api/v1/trove/chunk?property=popularity&direction=desc&index={chunk_index}"
 
     TROVE_GAMEKEY = TroveOrder.TROVE_GAMEKEY  # Arbitrary gamekey used to identify humble trove orders
 
@@ -184,7 +184,7 @@ class HumbleApi(object):
                 for i in data:
                     trove_data_element.append(i)
                 chunk_index = chunk_index + 1
-        
+
         return TroveOrder(trove_data_element, self)  # TODO error handling
 
     def _request(self, *args, **kwargs):
