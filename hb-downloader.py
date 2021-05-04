@@ -14,8 +14,8 @@ __copyright__ = "Copyright 2020 Brian Schkerke"
 __license__ = "MIT"
 
 # Actual contributors to this project:
-# Real Names:  Mayeul Cantan, Claudius Coenen, Katrin Leinweber, Tobi Grimm, Mark Kindy
-# GitHub Aliases:  badp, wjp, humor4fun, ectotropic, bspeice, MKindy
+# Real Names:  Brian Schkerke, Mayeul Cantan, Santi, Willem Jan Palenstijn, Chris Holt, (name unknown), (name unknown), Claudius Coenen, Diogo Monteiro, Katrin Leinweber, Tobi Grimm, (name unknown), Mark Kindy
+# GitHub Aliases:  talonius, MayeulC, badp, wjp, humor4fun, ectotropic, bspeice, ccoenen, diogogmt, katrinleinweber, ZeroInputCtrl, MKindy
 # Copyright 2016-2020, MIT License (https://opensource.org/licenses/MIT)
 #
 # Please email Brian Schkerke (bmschkerke@gmail.com) with your real name if
